@@ -13,7 +13,7 @@ module.exports = {
       {
         id: 2,
         nome: 'Michael',
-        sobrenome: 'Schumacher',
+        sobrenome: 'Schumaer',
         email: 'MichaelSchumacher@gmail.com',
         password: '123456',
         telefone: '(48)88888-8888',
