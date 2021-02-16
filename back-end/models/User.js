@@ -1,6 +1,6 @@
-const UserModel = (sequelize, DataTypes) => {
+module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define(
-      'Users',
+      'User',
       {
         nome: DataTypes.STRING,
         sobrenome: DataTypes.STRING,
@@ -14,6 +14,3 @@ const UserModel = (sequelize, DataTypes) => {
   
     return User;
   };
-  
-  module.exports = UserModel;
-  
