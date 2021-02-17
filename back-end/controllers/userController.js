@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const { User } = require('../models');
-const createToken = require('../middlewares/createToken');
 const auth = require('../middlewares/auth');
 
 // Get all users
@@ -17,7 +16,7 @@ router.get('/', auth, async (_req, res) => {
 router.post('/', auth, async (req, res) => {
   try {
     const { nome, sobrenome, email, password, telefone, cpf } = req.body;
-    const user = await User.create({
+    await User.create({
       nome,
       sobrenome,
       email,
