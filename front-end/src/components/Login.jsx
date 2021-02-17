@@ -1,8 +1,15 @@
-import React, { useState } from 'react';
+import React, { useReducer } from 'react';
 import { postLogin } from '../services/api';
+import { useHistory } from 'react-router-dom';
 
 const Login = () => {
-  const [form, setForm] = useState({ email: '', password: '' });
+  const history = useHistory();
+
+  const [form, setForm] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    { email: '', password: '' },
+  );
+
   const { email, password } = form;
 
   const handleInput = ({ target: { name, value } }) =>
@@ -12,9 +19,14 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const user = await postLogin(email, password);
-      console.log(user);
+      const response = await postLogin(email, password);
+      const { data } = response;
+
+      localStorage.userToken = JSON.stringify({ data });
+
+      history.push('/user');
     } catch (err) {
+      // criar um state "message" para apresentar erro
       console.log(err);
     }
   };
