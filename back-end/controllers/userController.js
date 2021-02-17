@@ -14,7 +14,7 @@ router.get('/', auth, async (_req, res) => {
 });
 
 // Create user
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
   try {
     const { nome, sobrenome, email, password, telefone, cpf } = req.body;
     const user = await User.create({
@@ -25,17 +25,13 @@ router.post('/', async (req, res) => {
       telefone,
       cpf,
     });
-    // retirando senha para criar o token sem informação sensível
-    const {
-      dataValues: { password: __, ...data },
-    } = user;
-    const token = createToken(data);
-    return res.status(201).json({ message: 'Usuário criado', token });
+    return res.status(201).json({ message: 'Usuário criado' });
   } catch (err) {
     return res.status(500).json({ message: 'Erro no servidor', err });
   }
 });
 
+// Get user by ID
 router.get('/:id', auth, async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id);
@@ -48,11 +44,38 @@ router.get('/:id', auth, async (req, res) => {
   }
 });
 
+//Update user
+router.put('/:id', auth, async (req, res) => {
+  try {
+    const { nome, sobrenome, email, password, telefone, cpf } = req.body;
+    const { id } = req.params;
+
+    // Verifica se existe usuário antes de atualizar
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: 'Usuário não encontrado' });
+    }
+    await User.update(
+      { nome, sobrenome, email, password, telefone, cpf },
+      { where: { id } },
+    );
+
+    return res.status(200).json({ message: 'Usuário atualizado' });
+  } catch (err) {
+    return res.status(500).json({ message: 'Erro no servidor', err });
+  }
+});
+
+// Delete user by id
 router.delete('/:id', auth, async (req, res) => {
   try {
-    const { id } = req.user;
+    const { id } = req.params;
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: 'Usuário não encontrado' });
+    }
     await User.destroy({ where: { id } });
-    return res.status(204).json({ message: 'Usuário excluido' });
+    return res.status(200).json({ message: 'Usuário excluido' });
   } catch (err) {
     return res.status(500).json({ message: 'Erro no servidor', err });
   }
