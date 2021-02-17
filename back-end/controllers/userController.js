@@ -1,8 +1,10 @@
 const router = require('express').Router();
 const { User } = require('../models');
+const createToken = require('../middlewares/createToken');
+const auth = require('../middlewares/auth');
 
 // Get all users
-router.get('/', async (_req, res) => {
+router.get('/', auth, async (_req, res) => {
   try {
     const users = await User.findAll();
     return res.status(200).json(users);
@@ -15,7 +17,7 @@ router.get('/', async (_req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { nome, sobrenome, email, password, telefone, cpf } = req.body;
-    const user = User.create({
+    const user = await User.create({
       nome,
       sobrenome,
       email,
@@ -23,14 +25,18 @@ router.post('/', async (req, res) => {
       telefone,
       cpf,
     });
-    // criar o token e mandar o token
-    return res.status(201).json({ message: 'Usuário criado' });
+    // retirando senha para criar o token sem informação sensível
+    const {
+      dataValues: { password: __, ...data },
+    } = user;
+    const token = createToken(data);
+    return res.status(201).json({ message: 'Usuário criado', token });
   } catch (err) {
     return res.status(500).json({ message: 'Erro no servidor', err });
   }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', auth, async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id);
     if (!user) {
@@ -42,7 +48,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
   try {
     const { id } = req.user;
     await User.destroy({ where: { id } });
