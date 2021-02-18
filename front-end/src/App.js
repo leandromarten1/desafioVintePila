@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import Login from './components/Login'
 import User from './components/User'
+import UpdateUser from "./components/UpdateUser";
 import './App.css';
 
 
@@ -17,7 +18,8 @@ function App() {
         <Router>
           <Switch>
             <Route exact path="/" component={Login} />
-            <Route path="/user" component={User} />
+            <Route exact path="/user" component={User} />
+            <Route exact path="/user/update/:id" component={UpdateUser} />
           </Switch>
         </Router>   
       </div>
