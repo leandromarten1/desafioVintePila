@@ -12,3 +12,7 @@
 - [ ] - Qualquer usuário poderá criar outros usuários
 - [ ] - Qualquer usuário poderá criar, atualizar, deletar ou listar os itens do CRUD
 - [ ] - Os campos do usuário deve ser, Nome, Sobrenome, E-mail, Senha, Telefone, CPF
+
+### Branchs
+- ``backend/crud``: Desenvolvimento do Back-end
+- ``frontend/crud``: Desenvolvimento do Front-end
